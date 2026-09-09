@@ -15,7 +15,9 @@ def load_env(path=".env"):
 
 load_env(os.path.join(os.path.dirname(__file__), ".env"))
 
-from plan import handler as PlanHandler  # plan.py의 os.getenv 호출보다 반드시 뒤에 위치
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "api"))
+from plan import handler as PlanHandler  # api/plan.py, load_env보다 반드시 뒤에 위치
 
 PORT = int(os.getenv("PORT", "8000"))
 PUBLIC_DIR = os.path.join(os.path.dirname(__file__), "public")

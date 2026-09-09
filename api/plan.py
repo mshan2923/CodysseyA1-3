@@ -3,8 +3,8 @@ from datetime import date
 from http.server import BaseHTTPRequestHandler
 import requests
 
-AI_URL="https://copa.codyssey.kr/v1/chat/completions"
-AI_MODEL="gpt-5-mini"
+AI_URL=os.getenv("AI_URL","http://localhost:11434/v1/chat/completions")
+AI_MODEL=os.getenv("AI_MODEL","llama3.1")
 LOCAL_URL="https://dapi.kakao.com/v2/local/search/keyword.json"
 ROUTE_URL="https://apis-navi.kakaomobility.com/v1/directions"
 
@@ -13,9 +13,10 @@ def reply(h,status,data):
     h.send_response(status);h.send_header("Content-Type","application/json; charset=utf-8");h.end_headers();h.wfile.write(b)
 
 def ai(messages):
+    # Ollama는 로컬 서버라 API 키가 필요 없음. 키가 있으면(예: 다시 원격 API로 전환) Authorization 헤더에 실어 보냄.
     key=os.getenv("CODYSSEY_API_KEY")
-    if not key: raise RuntimeError("CODYSSEY_API_KEY 환경 변수가 없습니다.")
-    r=requests.post(AI_URL,headers={"Authorization":f"Bearer {key}"},json={"model":AI_MODEL,"messages":messages},timeout=45)
+    headers={"Authorization":f"Bearer {key}"} if key else {}
+    r=requests.post(AI_URL,headers=headers,json={"model":AI_MODEL,"messages":messages,"stream":False},timeout=90)
     r.raise_for_status();return r.json()["choices"][0]["message"]["content"]
 
 def json_text(s):

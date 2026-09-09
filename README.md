@@ -41,16 +41,20 @@
 
 ```
 tripcanvas/
-├─ plan.py          # AI 일정 생성 + 장소 검증 + 경로 계산 (백엔드 로직)
-├─ server.py         # 로컬 개발용: 정적 파일 서빙 + /api/plan 라우팅
+├─ api/
+│  └─ plan.py        # AI 일정 생성 + 장소 검증 + 경로 계산 (Vercel Serverless Function)
 ├─ public/
 │  ├─ index.html
 │  ├─ css/style.css
 │  └─ js/app.js      # 폼 처리, 지도 렌더링(Kakao Maps)
+├─ server.py          # 로컬 개발 전용: 정적 파일 서빙 + /api/plan 라우팅 (api/plan.py 재사용)
+├─ requirements.txt
+├─ vercel.json        # 정적 출력 디렉터리를 public/으로 지정
+├─ .gitignore         # .env 등 민감 파일 커밋 방지
 └─ README.md
 ```
 
-> Vercel 배포 시에는 `plan.py`의 로직을 `api/plan.py` 형태의 Serverless Function으로 옮기고, `public/` 이하를 정적 자산으로 배포합니다.
+`api/plan.py`는 `http.server.BaseHTTPRequestHandler`를 상속한 `handler` 클래스 형태로 작성되어 있어, Vercel Python 런타임이 파일 경로(`api/plan.py` → `/api/plan`)만으로 자동으로 서버리스 함수로 인식합니다. 별도 프레임워크 코드 변환 없이 로컬(`server.py`)과 Vercel 배포 양쪽에서 동일한 파일을 그대로 씁니다.
 
 ## 4. 실행 방법 (로컬)
 
@@ -83,11 +87,13 @@ Kakao Developers 콘솔 → 앱 설정 → **플랫폼 → Web 사이트 도메�
 
 ## 5. 배포 (Vercel)
 
-1. GitHub 저장소에 코드 푸시
-2. Vercel에서 저장소 연동 → Import
+1. GitHub 저장소에 코드 푸시 (`.env`는 `.gitignore`에 포함되어 있어 커밋되지 않음)
+2. Vercel에서 저장소 연동 → Import (프레임워크 프리셋: **Other**)
 3. Vercel 프로젝트 설정 → **Environment Variables**에 `.env`와 동일한 키/값 등록 (`CODYSSEY_API_KEY`, `KAKAO_REST_API_KEY`, 필요 시 `AI_URL`, `AI_MODEL`)
-4. `requirements.txt`에 `requests` 포함 확인
-5. 배포 후 URL에서 네비게이션 이동 / 반응형 / AI 기능(일정 생성 → 지도 표시)이 정상 동작하는지 확인
+4. `requirements.txt`(`requests`)는 그대로 두면 Vercel이 빌드 시 자동 설치
+5. 배포되면 `api/plan.py`가 자동으로 `/api/plan` 엔드포인트가 되고, `public/` 아래 정적 파일이 사이트 루트로 서빙됨 (`vercel.json`의 `outputDirectory` 설정)
+6. 배포 후 URL에서 네비게이션 이동 / 반응형 / AI 기능(일정 생성 → 지도 표시)이 정상 동작하는지 확인
+7. Kakao Developers 콘솔 → 플랫폼 → Web 사이트 도메인에 **배포된 Vercel URL**도 추가 등록 (안 하면 지도 타일이 안 뜸)
 
 **배포 URL**: _(배포 후 여기에 기입)_
 
