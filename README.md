@@ -66,15 +66,15 @@ tripcanvas/
 프로젝트 루트에 `.env` 파일을 만들고 아래 값을 채운다 (`server.py`가 실행 시 자동으로 읽어 환경 변수로 등록):
 
 ```
-CODYSSEY_API_KEY=발급받은_codyssey_키          # 필수 (기본 AI_URL이 Codyssey이므로)
+AI_API_KEY=발급받은_gemini_키                  # 필수 (Google AI Studio에서 무료 발급)
 KAKAO_REST_API_KEY=발급받은_카카오_REST_키      # Kakao Local / Mobility 호출용
 # AI_URL=http://localhost:11434/v1/chat/completions  # 로컬에서 Ollama 등으로 테스트할 때만 주석 해제
 # AI_MODEL=llama3.1                                  # 위와 같이 사용할 때만
 ```
 
-- 기본 AI 엔드포인트는 Codyssey(`https://copa.codyssey.kr/v1/chat/completions`, `gpt-5-mini`)이며, 이 경우 `CODYSSEY_API_KEY`가 반드시 있어야 합니다.
-- `AI_URL`을 다른 값(예: 로컬 Ollama)으로 지정하면 그 주소로 요청하며, 이때는 `CODYSSEY_API_KEY`가 없어도 인증 헤더 없이 동작합니다.
-- **Vercel에 배포할 때는 `AI_URL`/`AI_MODEL`을 설정하지 않아야 합니다** — Vercel 서버리스 함수는 로컬 PC의 `localhost` (Ollama)에 접근할 수 없으므로, 배포 환경에서는 반드시 원격 API(Codyssey)를 써야 합니다. 로컬 개발 중에만 `.env`에 `AI_URL`/`AI_MODEL`을 넣어 Ollama로 전환해 테스트하세요.
+- 기본 AI 엔드포인트는 Google Gemini의 OpenAI 호환 API(`https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`, `gemini-2.0-flash`)이며, [Google AI Studio](https://aistudio.google.com/apikey)에서 무료로 키를 발급받을 수 있습니다. 이 경우 `AI_API_KEY`가 반드시 있어야 합니다.
+- `AI_URL`을 다른 값(예: 로컬 Ollama)으로 지정하면 그 주소로 요청하며, `localhost`가 포함된 주소면 키가 없어도 인증 헤더 없이 동작합니다.
+- **Vercel에 배포할 때는 `AI_URL`/`AI_MODEL`을 설정하지 않아야 합니다** — Vercel 서버리스 함수는 로컬 PC의 `localhost` (Ollama)에 접근할 수 없으므로, 배포 환경에서는 반드시 원격 API(Gemini)를 써야 합니다. 로컬 개발 중에만 `.env`에 `AI_URL`/`AI_MODEL`을 넣어 Ollama로 전환해 테스트하세요.
 - **API 키는 절대 코드/README/스크린샷에 노출하지 않으며, 반드시 `.env`(gitignore 처리)로만 관리합니다.**
 
 ### 실행
@@ -90,7 +90,7 @@ Kakao Developers 콘솔 → 앱 설정 → **플랫폼 → Web 사이트 도메�
 
 1. GitHub 저장소에 코드 푸시 (`.env`는 `.gitignore`에 포함되어 있어 커밋되지 않음)
 2. Vercel에서 저장소 연동 → Import (프레임워크 프리셋: **Other**)
-3. Vercel 프로젝트 설정 → **Environment Variables**에 `.env`와 동일한 키/값 등록 (`CODYSSEY_API_KEY`, `KAKAO_REST_API_KEY`, 필요 시 `AI_URL`, `AI_MODEL`)
+3. Vercel 프로젝트 설정 → **Environment Variables**에 `.env`와 동일한 키/값 등록 (`AI_API_KEY`, `KAKAO_REST_API_KEY`)
 4. `requirements.txt`(`requests`)는 그대로 두면 Vercel이 빌드 시 자동 설치
 5. 배포되면 `api/plan.py`가 자동으로 `/api/plan` 엔드포인트가 되고, `public/` 아래 정적 파일이 사이트 루트로 서빙됨 (`vercel.json`의 `outputDirectory` 설정)
 6. 배포 후 URL에서 네비게이션 이동 / 반응형 / AI 기능(일정 생성 → 지도 표시)이 정상 동작하는지 확인

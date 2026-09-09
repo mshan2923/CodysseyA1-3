@@ -3,8 +3,8 @@ from datetime import date
 from http.server import BaseHTTPRequestHandler
 import requests
 
-AI_URL=os.getenv("AI_URL","https://copa.codyssey.kr/v1/chat/completions")
-AI_MODEL=os.getenv("AI_MODEL","gpt-5-mini")
+AI_URL=os.getenv("AI_URL","https://generativelanguage.googleapis.com/v1beta/openai/chat/completions")
+AI_MODEL=os.getenv("AI_MODEL","gemini-2.0-flash")
 LOCAL_URL="https://dapi.kakao.com/v2/local/search/keyword.json"
 ROUTE_URL="https://apis-navi.kakaomobility.com/v1/directions"
 
@@ -13,13 +13,13 @@ def reply(h,status,data):
     h.send_response(status);h.send_header("Content-Type","application/json; charset=utf-8");h.end_headers();h.wfile.write(b)
 
 def ai(messages):
-    # 배포(Vercel) 기본값은 Codyssey 원격 API. 로컬에서 Ollama 등 키 없는 엔드포인트로 테스트하려면
-    # .env에 AI_URL/AI_MODEL만 지정하면 되고, 그 경우 CODYSSEY_API_KEY가 없어도 헤더 없이 요청함.
-    key=os.getenv("CODYSSEY_API_KEY")
-    if not key and "codyssey" in AI_URL:
-        raise RuntimeError("CODYSSEY_API_KEY 환경 변수가 없습니다.")
+    # AI_API_KEY가 우선, 없으면 예전 변수명(CODYSSEY_API_KEY)도 허용(하위 호환).
+    # 로컬에서 Ollama처럼 키가 필요 없는 엔드포인트로 테스트할 땐 .env의 AI_URL만 localhost로 바꾸면 키 없이도 동작.
+    key=os.getenv("AI_API_KEY") or os.getenv("CODYSSEY_API_KEY")
+    if not key and "localhost" not in AI_URL:
+        raise RuntimeError("AI_API_KEY 환경 변수가 없습니다.")
     headers={"Authorization":f"Bearer {key}"} if key else {}
-    r=requests.post(AI_URL,headers=headers,json={"model":AI_MODEL,"messages":messages,"stream":False},timeout=90)
+    r=requests.post(AI_URL,headers=headers,json={"model":AI_MODEL,"messages":messages,"stream":False},timeout=55)
     r.raise_for_status();return r.json()["choices"][0]["message"]["content"]
 
 def json_text(s):
