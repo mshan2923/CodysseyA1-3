@@ -66,14 +66,15 @@ tripcanvas/
 프로젝트 루트에 `.env` 파일을 만들고 아래 값을 채운다 (`server.py`가 실행 시 자동으로 읽어 환경 변수로 등록):
 
 ```
-CODYSSEY_API_KEY=발급받은_codyssey_키          # 원격 AI API 사용 시
+CODYSSEY_API_KEY=발급받은_codyssey_키          # 필수 (기본 AI_URL이 Codyssey이므로)
 KAKAO_REST_API_KEY=발급받은_카카오_REST_키      # Kakao Local / Mobility 호출용
-AI_URL=http://localhost:11434/v1/chat/completions  # 선택, 기본값: 로컬 Ollama
-AI_MODEL=llama3.1                                  # 선택, 기본값: llama3.1
+# AI_URL=http://localhost:11434/v1/chat/completions  # 로컬에서 Ollama 등으로 테스트할 때만 주석 해제
+# AI_MODEL=llama3.1                                  # 위와 같이 사용할 때만
 ```
 
-- `CODYSSEY_API_KEY`가 없으면 인증 헤더 없이 `AI_URL`로 요청합니다 (로컬 Ollama처럼 키가 필요 없는 경우).
-- `AI_URL` / `AI_MODEL`을 지정하지 않으면 로컬 Ollama(`http://localhost:11434`)를 기본으로 사용합니다.
+- 기본 AI 엔드포인트는 Codyssey(`https://copa.codyssey.kr/v1/chat/completions`, `gpt-5-mini`)이며, 이 경우 `CODYSSEY_API_KEY`가 반드시 있어야 합니다.
+- `AI_URL`을 다른 값(예: 로컬 Ollama)으로 지정하면 그 주소로 요청하며, 이때는 `CODYSSEY_API_KEY`가 없어도 인증 헤더 없이 동작합니다.
+- **Vercel에 배포할 때는 `AI_URL`/`AI_MODEL`을 설정하지 않아야 합니다** — Vercel 서버리스 함수는 로컬 PC의 `localhost` (Ollama)에 접근할 수 없으므로, 배포 환경에서는 반드시 원격 API(Codyssey)를 써야 합니다. 로컬 개발 중에만 `.env`에 `AI_URL`/`AI_MODEL`을 넣어 Ollama로 전환해 테스트하세요.
 - **API 키는 절대 코드/README/스크린샷에 노출하지 않으며, 반드시 `.env`(gitignore 처리)로만 관리합니다.**
 
 ### 실행
