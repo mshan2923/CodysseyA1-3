@@ -1,6 +1,8 @@
 {
   "outputDirectory": "public",
   "functions": {
-    "api/plan.py": {}
+    "api/plan.py": {
+      "maxDuration": 60
+    }
   }
 }
