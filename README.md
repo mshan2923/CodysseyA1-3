@@ -81,7 +81,7 @@ KAKAO_REST_API_KEY=발급받은_카카오_REST_키      # Kakao Local / Mobility
 ```
 python server.py
 ```
-브라우저에서 `http://localhost:8000` 접속.
+브라우저에서 'https://tripcanvas-h9nkzfr1b-mshan2923-2510.vercel.app/' 접속.
 
 ### Kakao Maps 지도가 안 보일 때
 Kakao Developers 콘솔 → 앱 설정 → **플랫폼 → Web 사이트 도메인**에 접속 주소(`http://localhost:8000` 등)를 정확히 등록해야 지도 타일이 표시됩니다.
