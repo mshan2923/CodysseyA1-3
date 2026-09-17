@@ -103,3 +103,8 @@ Kakao Developers 콘솔 → 앱 설정 → **플랫폼 → Web 사이트 도메�
 - API 키는 환경 변수로만 관리하며 저장소·문서·스크린샷에 노출하지 않는다.
 - AI/외부 API는 과금·쿼터가 발생할 수 있으므로 호출 실패 시 사용자에게 안내 메시지를 표시하고 재시도를 유도한다.
 - 키 유출이 의심되는 경우 즉시 폐기·재발급하고, 노출된 커밋 이력을 정리한다.
+
+
+<img width="2470" height="1400" alt="scene1" src="https://github.com/user-attachments/assets/413cff8a-c67f-4030-a321-3eaf90cf3bd4" />
+- <img width="2476" height="1400" alt="scene2" src="https://github.com/user-attachments/assets/f044b18b-d857-4328-b72a-b57f75138488" />
+
