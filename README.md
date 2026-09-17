@@ -8,6 +8,8 @@
 - **타겟 사용자**: 여행 계획에 시간을 많이 쓰고 싶지 않고, 텍스트보다 지도와 일정이 함께 보이는 결과를 선호하는 사용자
 - **목적**: 시작일/종료일과 원하는 여행 스타일만 입력하면, AI가 국내 여행지 한 곳과 날짜별 방문 순서를 구성하고, 실제로 존재하는 장소인지 확인해 지도 위에 동선까지 그려준다.
 
+## 배포 페이지 : https://tripcanvas-h9nkzfr1b-mshan2923-2510.vercel.app/
+
 ### 페이지/섹션 구성
 메인 페이지 하나에 스크롤/앵커 이동으로 구성된 4개 섹션(메뉴 이동 가능):
 - **홈** — 서비스 소개, 시작하기 CTA
@@ -58,6 +60,9 @@ tripcanvas/
 
 ## 4. 실행 방법 (로컬)
 
+### 실행
+
+python server.py
 ### 준비물
 - Python 3.9+
 - `pip install requests`
@@ -65,12 +70,16 @@ tripcanvas/
 ### 환경 변수 설정
 프로젝트 루트에 `.env` 파일을 만들고 아래 값을 채운다 (`server.py`가 실행 시 자동으로 읽어 환경 변수로 등록):
 
-```
+
+
 AI_API_KEY=발급받은_gemini_키                  # 필수 (Google AI Studio에서 무료 발급)
+
 KAKAO_REST_API_KEY=발급받은_카카오_REST_키      # Kakao Local / Mobility 호출용
-# AI_URL=http://localhost:11434/v1/chat/completions  # 로컬에서 Ollama 등으로 테스트할 때만 주석 해제
-# AI_MODEL=llama3.1                                  # 위와 같이 사용할 때만
-```
+
+AI_URL=http://localhost:11434/v1/chat/completions  # 로컬에서 Ollama 등으로 테스트할 때만 주석 해제
+
+AI_MODEL=llama3.1                                  # 위와 같이 사용할 때만
+
 
 - 기본 AI 엔드포인트는 Google Gemini의 OpenAI 호환 API(`https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`, `gemini-2.0-flash`)이며, [Google AI Studio](https://aistudio.google.com/apikey)에서 무료로 키를 발급받을 수 있습니다. 이 경우 `AI_API_KEY`가 반드시 있어야 합니다.
 - `AI_URL`을 다른 값(예: 로컬 Ollama)으로 지정하면 그 주소로 요청하며, `localhost`가 포함된 주소면 키가 없어도 인증 헤더 없이 동작합니다.
@@ -78,9 +87,9 @@ KAKAO_REST_API_KEY=발급받은_카카오_REST_키      # Kakao Local / Mobility
 - **API 키는 절대 코드/README/스크린샷에 노출하지 않으며, 반드시 `.env`(gitignore 처리)로만 관리합니다.**
 
 ### 실행
-```
+
 python server.py
-```
+
 브라우저에서 'https://tripcanvas-h9nkzfr1b-mshan2923-2510.vercel.app/' 접속.
 
 ### Kakao Maps 지도가 안 보일 때
@@ -96,7 +105,22 @@ Kakao Developers 콘솔 → 앱 설정 → **플랫폼 → Web 사이트 도메�
 6. 배포 후 URL에서 네비게이션 이동 / 반응형 / AI 기능(일정 생성 → 지도 표시)이 정상 동작하는지 확인
 7. Kakao Developers 콘솔 → 플랫폼 → Web 사이트 도메인에 **배포된 Vercel URL**도 추가 등록 (안 하면 지도 타일이 안 뜸)
 
-**배포 URL**: _(배포 후 여기에 기입)_
+ [** 배포 URL **](https://tripcanvas-h9nkzfr1b-mshan2923-2510.vercel.app/)
+
+ ### Kakao Maps JavaScript 키 보안
+
+Kakao Maps JavaScript SDK는 브라우저에서 직접 로드되므로
+JavaScript 앱 키가 클라이언트 코드에 포함됩니다.
+
+대신 Kakao Developers의 Web 플랫폼 도메인 제한을 적용하여
+등록된 도메인에서만 해당 키를 사용할 수 있도록 설정합니다.
+
+등록 도메인:
+- `http://localhost:8000`
+- `https://tripcanvas-h9nkzfr1b-mshan2923-2510.vercel.app/`
+
+Kakao Local / Mobility API에 사용하는 REST API 키는
+Vercel Environment Variables로 관리하며 클라이언트 코드에 노출하지 않습니다.
 
 ## 6. 제약 사항 준수
 
